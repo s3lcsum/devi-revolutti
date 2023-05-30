@@ -1,8 +1,9 @@
 # devi-revolutti
 
-
 ### 1. Design and code a simple "Hello World" application that exposes the following HTTP-based APIs:
+
 Description: Saves/updates the given user’s name and date of birth in the database.
+
 ```
 Request: PUT /hello/<username> { “dateOfBirth”: “YYYY-MM-DD” }
 Response: 204 No Content
@@ -16,18 +17,23 @@ Description: Returns hello birthday message for the given user
 ``
 Request: Get /hello/<username>
 Response: 200 OK
+
 ```
 Response Examples:
 A. If username’s birthday is in N days:
 ```
-{ 
-    “message”: “Hello, <username>! Your birthday is in N day(s)”
+
+{
+“message”: “Hello, <username>! Your birthday is in N day(s)”
 }
+
 ```
 
 B. If username’s birthday is today:
 ```
+
 { “message”: “Hello, <username>! Happy birthday!” }
+
 ```
 
 > Note: Use storage/database of your choice.
@@ -35,3 +41,13 @@ B. If username’s birthday is today:
 ### 2. Produce a system diagram of your solution deployed to either AWS or GCP (it's not required to support both cloud platforms).
 
 ### 3. Write configuration scripts for building and no-downtime production deployment of this application, keeping in mind aspects that an SRE would have to consider.
+
+
+
+
+### Kubernetes cluster
+
+```bash
+kind create cluster -n=devi-revolutti
+kind load docker-image devi-revolutti:0.1.0 -n devi-revolutti
+```

@@ -1,0 +1,16 @@
+# runtime dependencies
+uvicorn==0.22.0
+
+# dependencies
+SQLAlchemy==2.0.15
+fastapi==0.95.2
+freezegun==1.2.2
+pydantic==1.10.8
+pymysql==1.0.3
+mysql-connector-python==8.0.33
+
+# TODO: Split dev and production dependencies
+# dev-dependencies
+pytest==7.3.1
+starlette==0.27.0
+httpx==0.24.1
