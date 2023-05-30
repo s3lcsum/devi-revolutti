@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    image: devi-revolutti:0.1.0
+    build: ./app
+    environment:
+      DATABASE_USER: "devi"
+      DATABASE_PASS: "3cNs8KqVDIwORRYQ0B"
+      DATABASE_HOST: "mysql" # same as another service
+      DATABASE_NAME: "db"
+    ports:
+      - "8000:8000"
+    networks:
+      - devi-revolutti
+
+  mysql:
+    image: mysql:8.0
+    cap_add:
+      - SYS_NICE
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'devi'
+      MYSQL_PASSWORD: '3cNs8KqVDIwORRYQ0B'
+      MYSQL_ROOT_PASSWORD: '3cNs8KqVDIwORRYQ0B'
+    volumes:
+      - ./database:/var/lib/mysql
+    networks:
+      - devi-revolutti
+
+networks:
+  devi-revolutti:
+    driver: bridge
