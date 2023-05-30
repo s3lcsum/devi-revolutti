@@ -20,5 +20,9 @@ venv/
 # docker-compose.yaml volume dependency
 database/
 
+# Terraform code
 terraform/.terraform
 *.tfvars
+
+# Helm charts dependencies
+*.tgz
