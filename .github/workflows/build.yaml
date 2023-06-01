@@ -3,6 +3,8 @@ name: Build image
 on:
   push:
 
+concurrency: ci-${{ github.sha }}
+
 env:
   DOCKER_IMAGE: ${{ github.repository }}
 
@@ -26,8 +28,8 @@ jobs:
       - name: Build
         working-directory: app
         run: |
-          make build TAG=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+          make build TAG=ghcr.io/${{ github.repository }}:${{ github.sha }}
 
       - name: Publish image to Github Container Registry
         run: |
-          docker push ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+          docker push ghcr.io/${{ github.repository }}:${{ github.sha }}
