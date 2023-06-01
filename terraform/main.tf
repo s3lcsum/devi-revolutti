@@ -17,6 +17,6 @@ resource "google_service_account" "github-actions" {
 resource "google_project_iam_member" "github-actions" {
   project = var.project_id
 
-  role   = "roles/iam.workloadIdentityUser"
+  role   = "roles/container.developer"
   member = "serviceAccount:${google_service_account.github-actions.email}"
 }

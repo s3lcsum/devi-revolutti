@@ -13,17 +13,17 @@ jobs:
       id-token: 'write'
     runs-on: ubuntu-latest
     steps:
-      - id: 'auth'
+      - name: 'Authorize GHA to use GCP resources'
         uses: 'google-github-actions/auth@v1'
         with:
           credentials_json: '${{ secrets.GKE_CREDENTIALS_JSON }}'
 
-      - id: 'get-credentials'
+      - name: "Configure kubectl"
         uses: 'google-github-actions/get-gke-credentials@v1'
         with:
           cluster_name: '${{ vars.GKE_CLUSTER_NAME }}'
           location: '${{ vars.GKE_REGION }}'
 
-      # The KUBECONFIG env var is automatically exported and picked up by kubectl.
-      - id: 'get-pods'
-        run: 'kubectl get pods'
+      - name: 'Deploy app'
+        working-directory: helm/app
+        run: make apply
