@@ -13,6 +13,8 @@ jobs:
       id-token: 'write'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
       - name: 'Authorize GHA to use GCP resources'
         uses: 'google-github-actions/auth@v1'
         with:
@@ -24,8 +26,6 @@ jobs:
           cluster_name: '${{ vars.GKE_CLUSTER_NAME }}'
           location: '${{ vars.GKE_REGION }}'
 
-
-      - uses: actions/checkout@v3
       - name: 'Deploy app'
         working-directory: helm/app
         run: make apply
