@@ -5,10 +5,10 @@ services:
     image: devi-revolutti:0.1.0
     build: ./app
     environment:
-      DATABASE_USER: "devi"
-      DATABASE_PASS: "3cNs8KqVDIwORRYQ0B"
-      DATABASE_HOST: "mysql" # same as another service
-      DATABASE_NAME: "db"
+      DATABASE_USER: "${DATABASE_USER}"
+      DATABASE_PASS: "${DATABASE_PASS}"
+      DATABASE_NAME: "${DATABASE_NAME}"
+      DATABASE_HOST: "mysql"
     ports:
       - "8000:8000"
     networks:
@@ -19,10 +19,12 @@ services:
     cap_add:
       - SYS_NICE
     environment:
-      MYSQL_DATABASE: 'db'
-      MYSQL_USER: 'devi'
-      MYSQL_PASSWORD: '3cNs8KqVDIwORRYQ0B'
-      MYSQL_ROOT_PASSWORD: '3cNs8KqVDIwORRYQ0B'
+      MYSQL_DATABASE: '${DATABASE_NAME}'
+      MYSQL_USER: '${DATABASE_USER}'
+      MYSQL_PASSWORD: '${DATABASE_PASS}'
+      MYSQL_ROOT_PASSWORD: '${DATABASE_PASS}'
+    ports:
+      - "3306:3306"
     volumes:
       - ./database:/var/lib/mysql
     networks:
