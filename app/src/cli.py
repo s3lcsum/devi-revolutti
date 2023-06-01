@@ -12,8 +12,8 @@ logger = logging.getLogger(sys.argv[0])
 
 
 def serve(args):
-    logger.info(f"Running server {args}")
-    uvicorn.run(app, host=settings.APP_PORT, port=settings.APP_PORT)
+    logger.info("Running server at {host}:{port}".format(host=settings.APP_HOST, port=settings.APP_PORT))
+    uvicorn.run(app, host=settings.APP_HOST, port=settings.APP_PORT)
 
 
 def main():

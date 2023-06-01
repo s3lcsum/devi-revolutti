@@ -1,5 +1,6 @@
 #!/usr/bin/env make -f
 -include .env
+export
 
 VENV = venv
 PYTHON = $(VENV)/bin/python3
