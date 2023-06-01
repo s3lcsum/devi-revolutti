@@ -5,6 +5,7 @@ import sys
 
 import uvicorn
 from main import app
+from utils import settings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(sys.argv[0])
@@ -12,7 +13,7 @@ logger = logging.getLogger(sys.argv[0])
 
 def serve(args):
     logger.info(f"Running server {args}")
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host=settings.APP_PORT, port=settings.APP_PORT)
 
 
 def main():

@@ -2,6 +2,10 @@ import os
 
 PROJECT_NAME = "devi-revolutti"
 VERSION = "0.1.0"
+
+APP_HOST: str = os.getenv('APP_HOST', f"0.0.0.0")
+APP_PORT: int = os.getenv('APP_PORT', 8000)
+
 DATABASE_HOST: str = os.getenv('DATABASE_HOST', f"127.0.0.1")
 DATABASE_PORT: str = os.getenv('DATABASE_PORT', f"3306")
 DATABASE_USER: str = os.getenv('DATABASE_USER', f"root")
