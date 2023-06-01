@@ -24,6 +24,8 @@ jobs:
           cluster_name: '${{ vars.GKE_CLUSTER_NAME }}'
           location: '${{ vars.GKE_REGION }}'
 
+
+      - uses: actions/checkout@v3
       - name: 'Deploy app'
         working-directory: helm/app
         run: make apply
