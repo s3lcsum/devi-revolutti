@@ -11,10 +11,7 @@ env:
   DOCKER_IMAGE: ${{ github.repository }}
 
 jobs:
-  build:
-    permissions:
-      contents: 'read'
-      id-token: 'write'
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
