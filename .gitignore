@@ -1,3 +1,6 @@
+# Don't share your credentials from GCP
+credentials.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 
