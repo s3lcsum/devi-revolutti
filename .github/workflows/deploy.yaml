@@ -1,7 +1,8 @@
 name: Deploy image
 
 on:
-  - push
+  release:
+    types: [ published ]
 
 env:
   DOCKER_IMAGE: ${{ github.repository }}
