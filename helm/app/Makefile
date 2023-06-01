@@ -18,3 +18,6 @@ uninstall: ## Uninstall the Helm chart
 
 validate: ## Validate the Helm chart values
 	helm template --values ./values.yaml ./
+
+update: ## Update just a image.tag for deployment
+	helm upgrade $(RELEASE_NAME) --reuse-values --set image.tag=$(IMAGE_TAG)

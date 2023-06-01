@@ -73,6 +73,15 @@ Output
 
 # TODO: GHA auto runs make apply on chart to deploy it to GKE
 
+```
+gcloud iam service-accounts keys create credentials.json --iam-account=github-actions@s3lcusm-box.iam.gserviceaccount.com
+```
+
+```bash
+gh secret set GKE_CREDENTIALS_JSON < credentials.json
+gh variable set GKE_CLUSTER_NAME --body "devi-revolutti"
+gh variable set GKE_REGION --body "europe-west1"
+```
 # TODO: Diagram
 
 # TODO: Clean the code

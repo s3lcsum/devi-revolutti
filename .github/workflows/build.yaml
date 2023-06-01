@@ -2,8 +2,8 @@ name: Build image
 
 on:
   push:
-    branches:
-      - main
+
+concurrency: ci-${{ github.sha }}
 
 env:
   DOCKER_IMAGE: ${{ github.repository }}
@@ -20,7 +20,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{github.actor}}
-          password: ${{secrets.GITHUB_TOKEN}}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -28,8 +28,8 @@ jobs:
       - name: Build
         working-directory: app
         run: |
-          make build TAG=ghcr.io/${{ env.DOCKER_IMAGE }}:latest
+          make build TAG=ghcr.io/${{ github.repository }}:${{ github.sha }}
 
       - name: Publish image to Github Container Registry
         run: |
-          docker push ghcr.io/${{ env.DOCKER_IMAGE }}:latest
+          docker push ghcr.io/${{ github.repository }}:${{ github.sha }}

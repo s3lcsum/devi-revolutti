@@ -1,0 +1,35 @@
+name: Deploy image
+
+on:
+  release:
+    types: [ published ]
+
+# Wait for building if it is still working
+concurrency: ci-${{ github.sha }}
+
+env:
+  DOCKER_IMAGE: ${{ github.repository }}
+
+jobs:
+  build:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 'Authorize GHA to use GCP resources'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GKE_CREDENTIALS_JSON }}'
+
+      - name: "Configure kubectl"
+        uses: 'google-github-actions/get-gke-credentials@v1'
+        with:
+          cluster_name: '${{ vars.GKE_CLUSTER_NAME }}'
+          location: '${{ vars.GKE_REGION }}'
+
+      - name: 'Deploy app'
+        working-directory: helm/app
+        run: 'make update IMAGE_TAG=${{ github.sha }}'
