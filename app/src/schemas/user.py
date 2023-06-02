@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from pydantic import BaseModel, types, validator
 
 
@@ -13,6 +13,10 @@ class UserBaseSchema(BaseModel):
     def validate_date(cls, v):
         if not v < date.today():
             raise ValueError("You're from the future!")
+
+        # Raise error if date will be in wrong format
+        datetime.strptime(v, "%Y-%m-%d")
+
         return v
 
 

@@ -1,54 +1,81 @@
 # devi-revolutti
 
-## Create local environment using `kind` k8s-cluster
+This project aims to create a local development environment using the kind Kubernetes cluster.
+It also includes setup instructions for Terraform and GKE (Google Kubernetes Engine) configuration.
+
+## Create a Local Environment using `kind` for kubernetes cluster
+
+To create the local environment, follow these steps:
 
 ```bash
-export NAME=devi-revolutti
-
+# Create the kind cluster
 kind create cluster --name $NAME
+
+# Load the Docker image
 kind load docker-image $NAME:0.1.0
 ```
 
-## Setup terraform code
+## Create a GKE environment using kind Kubernetes Cluster
+
+To set up the Terraform code and configure GCP (Google Cloud Platform), follow these steps:
 
 ```bash
+# # Configure Google Cloud CLI
 gcloud auth login
 gcloud auth application-default login
-gcloud config set project devi-revolutti
+gcloud config set project $GKE_PROJECT_ID
+gcloud config set region $GKE_REGION
 ```
 
-Enable Kubernets API form the browser
-https://console.cloud.google.com/flows/enableapi?apiid=container.googleapis.com&_ga=2.267233742.1106497351.1685574149-189793240.1640013890
+**Note**: Before proceeding further, ensure that you have enabled the Kubernetes API by visiting the following link in
+your
+browser: [Enable Kubernetes API](https://console.cloud.google.com/flows/enableapi?apiid=container.googleapis.com&_ga=2.267233742.1106497351.1685574149-189793240.1640013890)
 
-### Download GKE config
+### Configure and apply the terraform code
 
-```
-gcloud container clusters get-credentials devi-revolutti --region europe-west1 
-```
-
-### Auth GKE to use private GHCR
+Terraform will create a simple GKE Cluster and service account used later for GitHub Actions workflows.
 
 ```bash
-kubectl create secret docker-registry github-registry \
-  --docker-server=ghcr.io \
-  --docker-username= \
-  --docker-password= \
-  --docker-email=
+cd terraform
+
+make init
+
+cat >defaults.auto.tfvars <<EOF
+project_id = "$GKE_PROJECT_ID"
+region = "$GKE_REGION"
+cluster_name = "$CLUSTER_NAME"
+EOF
+
+make apply
 ```
 
-```
-(GHA takes care of building new image every commit, but only with tag :latest)
+Generate `kubeconfig` basing on GKE
 
-cd terraform && make init && make apply | yes
-
-cd helm/mysql && make init && make apply
-cd helm/app && make apply && make test
+```bash
+gcloud container clusters get-credentials $CLUSTER_NAME
 ```
 
-Output
+## Deploy Helm charts
+
+Check your default `values.yaml` files inside `helm/` directory and then apply those charts to your kube contex.
+
+```bash
+(cd helm/mysql && make init && make apply)
+(cd helm/app && make apply && make test)
+```
+
+**Note:** you can print manifests before apply using this make target:
+
+```bash
+make validate
+```
+
+### Test your application
+
+Make a simple request using a `curl` command to PUT your data into the database.
 
 ```
-❯ curl 35.241.153.211/hello/s3lcsum -X PUT -H 'Content-Type: application/json' -d '{"dateOfBirth":"2020-02-02"}' -v
+❯ curl 35.241.153.211/hello/s3lcsum -X PUT -H 'Content-Type: application/json' -d '{"dateOfBirth":"1999-01-01"}' -v
 *   Trying 35.241.153.211:80...
 * Connected to 35.241.153.211 (35.241.153.211) port 80 (#0)
 > PUT /hello/s3lcsum HTTP/1.1
@@ -66,24 +93,41 @@ Output
 * Connection #0 to host 35.241.153.211 left intact
 ```
 
-```
-❯ curl 35.241.153.211/hello/s3lcsum -H 'Content-Type: application/json'
-{"message":"Hello, s3lcsum! Your birthday is in 247 day(s)"}
-```
+More examples of API requests you can find in this [file](app/README.md)
 
-# TODO: GHA auto runs make apply on chart to deploy it to GKE
+## GitHub Actions
 
-```
-export PROJECT_ID=
-export CLUSTER_NAME=
-export GKE_REGION=
+To authorize your workflows to deploy new charts into GKE you can follow these steps:
 
+### Generate Key for service account generated via terraform code
+
+```bash
 gcloud iam service-accounts keys create credentials.json --iam-account=github-actions@${PROJECT_ID}.iam.gserviceaccount.com
+```
 
+### Put secrets and GKE configuration into your repository
+
+```bash
 gh secret set GKE_CREDENTIALS_JSON < credentials.json
 gh variable set GKE_CLUSTER_NAME --body $CLUSTER_NAME
 gh variable set GKE_REGION --body $GKE_REGION
 ```
-# TODO: Diagram
 
-# TODO: Clean the code
+### Push new `imagePullSecret` into your kubernetes
+
+```bash
+export GH_TOKEN=$(gh auth token)
+
+kubectl create secret docker-registry github-registry \
+  --docker-server=ghcr.io \
+  --docker-username=$GH_USER \
+  --docker-password=$GH_TOKEN \
+  --docker-email=$GH_EMAIL
+
+```
+
+### Diagram of example GKE deployment
+
+![architecture.png](docs%2Farchitecture.png)
+
+
