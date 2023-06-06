@@ -14,9 +14,6 @@ class UserBaseSchema(BaseModel):
         if not v < date.today():
             raise ValueError("You're from the future!")
 
-        # Raise error if date will be in wrong format
-        datetime.strptime(v, "%Y-%m-%d")
-
         return v
 
 

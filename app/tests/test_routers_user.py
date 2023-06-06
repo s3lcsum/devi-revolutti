@@ -21,7 +21,7 @@ def test_create_user(client: TestClient):
 def test_update_existing_user(client: TestClient):
     response = client.put(
         "/hello/test",
-        json={"dateOfBirth": date(year=2001, month=2, day=2).strftime('%Y-%m-%d')},
+        json={"dateOfBirth": "2001-02-02"},
     )
     assert response.status_code == 204
 
